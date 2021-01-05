@@ -1,0 +1,33 @@
+---
+1:
+  HostName: '1'
+  Interfaces:
+    ConnectedTo: None
+    Core: false
+    Name: ge-0/0/0
+  MgmtIP: 127.0.0.1
+  NetconfPort: 830
+2:
+  HostName: P2
+  Interfaces:
+    ConnectedTo: None
+    Core: false
+    Name: ge-0/0/0
+  MgmtIP: 127.0.0.1
+  NetconfPort: 830
+3:
+  HostName: R3
+  Interfaces:
+    ConnectedTo: None
+    Core: false
+    Name: ge-0/0/0
+  MgmtIP: 127.0.0.1
+  NetconfPort: 830
+4:
+  HostName: R7
+  Interfaces:
+    ConnectedTo: None
+    Core: false
+    Name: ge-0/0/0
+  MgmtIP: 127.0.0.1
+  NetconfPort: 830
