@@ -1,33 +1,27 @@
 ---
 1:
-  HostName: '1'
+  HostName: P1
   Interfaces:
-    ConnectedTo: None
-    Core: false
-    Name: ge-0/0/0
-  MgmtIP: 127.0.0.1
+    ge-0/0/0:
+      ConnectedTo: 2
+      IP: 10.1.2.1/24
+      MPLS: y
+    ge-0/0/1:
+      ConnectedTo: 2
+      MPLS: n
+    lo0:
+      IP: 10.0.0.1
   NetconfPort: 830
 2:
   HostName: P2
   Interfaces:
-    ConnectedTo: None
-    Core: false
-    Name: ge-0/0/0
-  MgmtIP: 127.0.0.1
-  NetconfPort: 830
-3:
-  HostName: R3
-  Interfaces:
-    ConnectedTo: None
-    Core: false
-    Name: ge-0/0/0
-  MgmtIP: 127.0.0.1
-  NetconfPort: 830
-4:
-  HostName: R7
-  Interfaces:
-    ConnectedTo: None
-    Core: false
-    Name: ge-0/0/0
-  MgmtIP: 127.0.0.1
+    ge-0/0/1:
+      ConnectedTo: 1
+      IP: 10.1.2.2/24
+      MPLS: y
+    ge-0/0/2:
+      ConnectedTo: 1
+      MPLS: n
+    lo0:
+      IP: 10.0.0.2
   NetconfPort: 830
