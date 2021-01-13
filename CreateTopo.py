@@ -18,8 +18,8 @@ while True:
   elif Choice=='2':
     SrcId=int(input("Source Router Id (1-253):"))
     DstId=int(input("Destination Router Id (1-253):"))
-    SrcIf=int(input("Source Router Interface (0-6):"))
-    DstIf=int(input("Destination Router Interface (0-6):"))
+    SrcIf=int(input("Source Router Interface (0-7):"))
+    DstIf=int(input("Destination Router Interface (0-7):"))
     while True:
       IsCore=str(input("MPLS interface? y/n:"))
       if IsCore=="y" or IsCore=="n":

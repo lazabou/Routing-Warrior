@@ -1,9 +1,64 @@
+system {
+  hostname {{HostName}};
+}
+
 interfaces {
-{% for Interface in Interfaces %}
-   {{Interface}} {
-      unit 0 {
-        family inet address {{Interface.IP}}
+{%- for Interface, Items in Interfaces.items() %}
+  {%- if Items.MPLS == 'y' %}
+    {{Interface}} {
+    description vers-{{Items.ConnectedTo}}; 
+       unit 0 {
+         family inet address {{Items.IP}};
+         family mpls;
+        }
+     }
+  {%- endif %}
+  {%- if Interface == 'lo0' %} 
+      {{Interface}} {
+       unit 0 {
+         family inet address {{Items.IP}}/32;
+        }
+     }
+  {%- endif %} 
+{%- endfor %}
+}
+
+protocols {
+  ospf {
+    area 0.0.0.0 {
+      interfaces {
+        {%- for Interface, Items in Interfaces.items() %}
+        {%- if Items.MPLS == 'y' %}
+        {{Interface}}.0 {
+              interface-type p2p;
+            }
+        {%- endif %}
+        {%- endfor %}
+        lo0.0{
+                passive;
+            }
       }
     }
-{% endfor %}
+  }
+  ldp {
+      interfaces {
+        {%- for Interface, Items in Interfaces.items() %}
+        {%- if Items.MPLS == 'y' %}
+        {{Interface}}.0;
+        {%- endif %}
+        {%- endfor %}
+        lo0.0;
+      }
+  }
+  mpls {
+      interfaces {
+        {%- for Interface, Items in Interfaces.items() %}
+        {%- if Items.MPLS == 'y' %}
+        {{Interface}}.0;
+        {%- endif %}
+        {%- endfor %}
+        lo0.0;
+      }
+  }
 }
+

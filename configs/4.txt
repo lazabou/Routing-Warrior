@@ -1,0 +1,93 @@
+system {
+  hostname P4;
+}
+
+interfaces {
+    ge-0/0/0 {
+    description vers-3; 
+       unit 0 {
+         family inet address 10.3.4.4/24;
+         family mpls;
+        }
+     }
+    ge-0/0/1 {
+    description vers-6; 
+       unit 0 {
+         family inet address 10.4.6.4/24;
+         family mpls;
+        }
+     }
+    ge-0/0/2 {
+    description vers-2; 
+       unit 0 {
+         family inet address 10.2.4.4/24;
+         family mpls;
+        }
+     }
+    ge-0/0/3 {
+    description vers-5; 
+       unit 0 {
+         family inet address 10.4.5.4/24;
+         family mpls;
+        }
+     }
+    ge-0/0/6 {
+    description vers-1; 
+       unit 0 {
+         family inet address 10.1.4.4/24;
+         family mpls;
+        }
+     } 
+      lo0 {
+       unit 0 {
+         family inet address 10.0.0.4/32;
+        }
+     }
+}
+
+protocols {
+  ospf {
+    area 0.0.0.0 {
+      interfaces {
+        ge-0/0/0.0 {
+              interface-type p2p;
+            }
+        ge-0/0/1.0 {
+              interface-type p2p;
+            }
+        ge-0/0/2.0 {
+              interface-type p2p;
+            }
+        ge-0/0/3.0 {
+              interface-type p2p;
+            }
+        ge-0/0/6.0 {
+              interface-type p2p;
+            }
+        lo0.0{
+                passive;
+            }
+      }
+    }
+  }
+  ldp {
+      interfaces {
+        ge-0/0/0.0;
+        ge-0/0/1.0;
+        ge-0/0/2.0;
+        ge-0/0/3.0;
+        ge-0/0/6.0;
+        lo0.0;
+      }
+  }
+  mpls {
+      interfaces {
+        ge-0/0/0.0;
+        ge-0/0/1.0;
+        ge-0/0/2.0;
+        ge-0/0/3.0;
+        ge-0/0/6.0;
+        lo0.0;
+      }
+  }
+}

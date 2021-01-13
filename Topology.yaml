@@ -1,15 +1,29 @@
 ---
 1:
-  HostName: P1
+  HostName: PE1
   Interfaces:
     ge-0/0/0:
       ConnectedTo: 2
       IP: 10.1.2.1/24
       MPLS: y
     ge-0/0/1:
-      ConnectedTo: 2
+      ConnectedTo: 7
       MPLS: n
     ge-0/0/2:
+      ConnectedTo: 3
+      IP: 10.1.3.1/24
+      MPLS: y
+    ge-0/0/3:
+      ConnectedTo: 7
+      MPLS: n
+    ge-0/0/4:
+      ConnectedTo: 7
+      MPLS: n
+    ge-0/0/5:
+      ConnectedTo: 10
+      IP: 10.1.10.1/24
+      MPLS: y
+    ge-0/0/6:
       ConnectedTo: 4
       IP: 10.1.4.1/24
       MPLS: y
@@ -17,25 +31,269 @@
       IP: 10.0.0.1
   NetconfPort: 830
 2:
-  HostName: P2
+  HostName: PE2
   Interfaces:
-    ge-0/0/1:
+    ge-0/0/0:
       ConnectedTo: 1
       IP: 10.1.2.2/24
       MPLS: y
     ge-0/0/2:
-      ConnectedTo: 1
-      MPLS: n
+      ConnectedTo: 4
+      IP: 10.2.4.2/24
+      MPLS: y
+    ge-0/0/3:
+      ConnectedTo: 10
+      IP: 10.2.10.2/24
+      MPLS: y
     lo0:
       IP: 10.0.0.2
+  NetconfPort: 830
+3:
+  HostName: P3
+  Interfaces:
+    ge-0/0/0:
+      ConnectedTo: 4
+      IP: 10.3.4.3/24
+      MPLS: y
+    ge-0/0/1:
+      ConnectedTo: 5
+      IP: 10.3.5.3/24
+      MPLS: y
+    ge-0/0/2:
+      ConnectedTo: 1
+      IP: 10.1.3.3/24
+      MPLS: y
+    lo0:
+      IP: 10.0.0.3
   NetconfPort: 830
 4:
   HostName: P4
   Interfaces:
+    ge-0/0/0:
+      ConnectedTo: 3
+      IP: 10.3.4.4/24
+      MPLS: y
+    ge-0/0/1:
+      ConnectedTo: 6
+      IP: 10.4.6.4/24
+      MPLS: y
+    ge-0/0/2:
+      ConnectedTo: 2
+      IP: 10.2.4.4/24
+      MPLS: y
     ge-0/0/3:
+      ConnectedTo: 5
+      IP: 10.4.5.4/24
+      MPLS: y
+    ge-0/0/6:
       ConnectedTo: 1
       IP: 10.1.4.4/24
       MPLS: y
     lo0:
       IP: 10.0.0.4
+  NetconfPort: 830
+5:
+  HostName: PE5
+  Interfaces:
+    ge-0/0/0:
+      ConnectedTo: 6
+      IP: 10.5.6.5/24
+      MPLS: y
+    ge-0/0/1:
+      ConnectedTo: 3
+      IP: 10.3.5.5/24
+      MPLS: y
+    ge-0/0/2:
+      ConnectedTo: 11
+      IP: 10.5.11.5/24
+      MPLS: y
+    ge-0/0/3:
+      ConnectedTo: 4
+      IP: 10.4.5.5/24
+      MPLS: y
+    ge-0/0/5:
+      ConnectedTo: 8
+      MPLS: n
+    ge-0/0/6:
+      ConnectedTo: 8
+      MPLS: n
+    ge-0/0/7:
+      ConnectedTo: 8
+      MPLS: n
+    lo0:
+      IP: 10.0.0.5
+  NetconfPort: 830
+6:
+  HostName: PE6
+  Interfaces:
+    ge-0/0/0:
+      ConnectedTo: 5
+      IP: 10.5.6.6/24
+      MPLS: y
+    ge-0/0/1:
+      ConnectedTo: 4
+      IP: 10.4.6.6/24
+      MPLS: y
+    ge-0/0/2:
+      ConnectedTo: 12
+      IP: 10.6.12.6/24
+      MPLS: y
+    ge-0/0/3:
+      ConnectedTo: 8
+      MPLS: n
+    ge-0/0/4:
+      ConnectedTo: 8
+      MPLS: n
+    lo0:
+      IP: 10.0.0.6
+  NetconfPort: 830
+7:
+  HostName: CE7
+  Interfaces:
+    ge-0/0/1:
+      ConnectedTo: 1
+      MPLS: n
+    ge-0/0/3:
+      ConnectedTo: 1
+      MPLS: n
+    ge-0/0/4:
+      ConnectedTo: 1
+      MPLS: n
+    lo0:
+      IP: 10.0.0.7
+  NetconfPort: 830
+8:
+  HostName: CE8
+  Interfaces:
+    ge-0/0/3:
+      ConnectedTo: 6
+      MPLS: n
+    ge-0/0/4:
+      ConnectedTo: 6
+      MPLS: n
+    ge-0/0/5:
+      ConnectedTo: 5
+      MPLS: n
+    ge-0/0/6:
+      ConnectedTo: 5
+      MPLS: n
+    ge-0/0/7:
+      ConnectedTo: 5
+      MPLS: n
+    lo0:
+      IP: 10.0.0.8
+  NetconfPort: 830
+9:
+  HostName: CE9
+  Interfaces:
+    ge-0/0/0:
+      ConnectedTo: 10
+      MPLS: n
+    ge-0/0/1:
+      ConnectedTo: 10
+      MPLS: n
+    lo0:
+      IP: 10.0.0.9
+  NetconfPort: 830
+10:
+  HostName: PE10
+  Interfaces:
+    ge-0/0/0:
+      ConnectedTo: 9
+      MPLS: n
+    ge-0/0/1:
+      ConnectedTo: 9
+      MPLS: n
+    ge-0/0/3:
+      ConnectedTo: 2
+      IP: 10.2.10.10/24
+      MPLS: y
+    ge-0/0/5:
+      ConnectedTo: 1
+      IP: 10.1.10.10/24
+      MPLS: y
+    lo0:
+      IP: 10.0.0.10
+  NetconfPort: 830
+11:
+  HostName: PE11
+  Interfaces:
+    ge-0/0/0:
+      ConnectedTo: 12
+      IP: 10.11.12.11/24
+      MPLS: y
+    ge-0/0/1:
+      ConnectedTo: 13
+      IP: 10.11.13.11/24
+      MPLS: y
+    ge-0/0/2:
+      ConnectedTo: 5
+      IP: 10.5.11.11/24
+      MPLS: y
+    lo0:
+      IP: 10.0.0.11
+  NetconfPort: 830
+12:
+  HostName: PE12
+  Interfaces:
+    ge-0/0/0:
+      ConnectedTo: 11
+      IP: 10.11.12.12/24
+      MPLS: y
+    ge-0/0/1:
+      ConnectedTo: 14
+      IP: 10.12.14.12/24
+      MPLS: y
+    ge-0/0/2:
+      ConnectedTo: 6
+      IP: 10.6.12.12/24
+      MPLS: y
+    lo0:
+      IP: 10.0.0.12
+  NetconfPort: 830
+13:
+  HostName: PE13
+  Interfaces:
+    ge-0/0/0:
+      ConnectedTo: 14
+      IP: 10.13.14.13/24
+      MPLS: y
+    ge-0/0/1:
+      ConnectedTo: 11
+      IP: 10.11.13.13/24
+      MPLS: y
+    ge-0/0/2:
+      ConnectedTo: 15
+      MPLS: n
+    lo0:
+      IP: 10.0.0.13
+  NetconfPort: 830
+14:
+  HostName: PE14
+  Interfaces:
+    ge-0/0/0:
+      ConnectedTo: 13
+      IP: 10.13.14.14/24
+      MPLS: y
+    ge-0/0/1:
+      ConnectedTo: 12
+      IP: 10.12.14.14/24
+      MPLS: y
+    ge-0/0/3:
+      ConnectedTo: 15
+      MPLS: n
+    lo0:
+      IP: 10.0.0.14
+  NetconfPort: 830
+15:
+  HostName: CE15
+  Interfaces:
+    ge-0/0/2:
+      ConnectedTo: 13
+      MPLS: n
+    ge-0/0/3:
+      ConnectedTo: 14
+      MPLS: n
+    lo0:
+      IP: 10.0.0.15
   NetconfPort: 830

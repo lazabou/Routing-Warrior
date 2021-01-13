@@ -7,6 +7,9 @@ MyTemplate=env.get_template("template.j2")
 with open("Topology.yaml", 'r') as yamlfile:
   Devices = yaml.load(yamlfile,Loader=yaml.FullLoader)
 
-result=MyTemplate.render(Devices[2])
-print("voici le resultat")
-print(result)
+
+for Router in Devices.keys(): 
+  result=MyTemplate.render(Devices[Router])
+  f = open("configs/"+str(Router)+".txt", "w")
+  f.write(result)
+  f.close()
