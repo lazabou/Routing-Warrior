@@ -1,0 +1,9 @@
+interfaces {
+{% for Interface in Interfaces %}
+   {{Interface}} {
+      unit 0 {
+        family inet address {{Interface.IP}}
+      }
+    }
+{% endfor %}
+}

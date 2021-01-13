@@ -9,6 +9,10 @@
     ge-0/0/1:
       ConnectedTo: 2
       MPLS: n
+    ge-0/0/2:
+      ConnectedTo: 4
+      IP: 10.1.4.1/24
+      MPLS: y
     lo0:
       IP: 10.0.0.1
   NetconfPort: 830
@@ -24,4 +28,14 @@
       MPLS: n
     lo0:
       IP: 10.0.0.2
+  NetconfPort: 830
+4:
+  HostName: P4
+  Interfaces:
+    ge-0/0/3:
+      ConnectedTo: 1
+      IP: 10.1.4.4/24
+      MPLS: y
+    lo0:
+      IP: 10.0.0.4
   NetconfPort: 830
