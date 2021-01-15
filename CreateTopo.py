@@ -1,6 +1,8 @@
 import ModuleTopo as Topo
 import yaml
 
+print("Salut les Routing Warriors")
+
 while True:
   print("choose your action:")
   print("1. Add a Router")
@@ -32,5 +34,5 @@ while True:
       print(Answer)
   elif Choice=='3':
     break
-  else: 
+  else:
     print("invalid choice")
