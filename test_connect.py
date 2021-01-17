@@ -2,9 +2,9 @@ import sys
 from jnpr.junos import Device
 from jnpr.junos.utils.config import Config
 
-login = test
-passwd = Juniper123
-
+login = "test"
+passwd = "Juniper123"
+IP="172.30.110.25"
 
 while True:
   print("Do you want to connect to another router? Y/N?")
@@ -12,9 +12,13 @@ while True:
   print("N. No")
   Choice = input()
 
-  if Choice==('Y' or 'y'):
+  if Choice==('Y'):
     IP=input("Router IP:")
-    dev = Device(host=IP, login=login, passwd=passwd).open()
+    Port=input("Type enter to leave default port or enter Netconf port:")
+# Use default port to connect which is 830
+    if not (Port):
+        Port='830'
+    dev = Device(host=IP, user=login, passwd=passwd, port=Port).open()
     try:
        dev.open()
     except ConnectError as err:
@@ -27,7 +31,7 @@ while True:
     print (dev.facts)
     dev.close()
 
-  elif Choice==('N' or 'n'):
+  elif Choice==('N'):
     break
   else:
     print("invalid choice")
