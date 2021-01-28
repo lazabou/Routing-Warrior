@@ -1,25 +1,25 @@
 system {
-  hostname {{HostName}};
+  host-name {{HostName}};
 }
 
 interfaces {
 {%- for Interface, Items in Interfaces.items() %}
   {%- if Items.MPLS == 'y' %}
     {{Interface}} {
-    description vers-{{Items.ConnectedTo}}; 
+    description vers-{{Items.ConnectedTo}};
        unit 0 {
          family inet address {{Items.IP}};
          family mpls;
         }
      }
   {%- endif %}
-  {%- if Interface == 'lo0' %} 
+  {%- if Interface == 'lo0' %}
       {{Interface}} {
        unit 0 {
          family inet address {{Items.IP}}/32;
         }
      }
-  {%- endif %} 
+  {%- endif %}
 {%- endfor %}
 }
 
@@ -61,4 +61,3 @@ protocols {
       }
   }
 }
-
