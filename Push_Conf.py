@@ -12,8 +12,12 @@ from jnpr.junos.exception import CommitError
 # When calling the script type:
 # - as first argument: device login
 # - as second argument: device password
-login = sys.argv[1]
-passwd = sys.argv[2]
+#login = sys.argv[1]
+#passwd = sys.argv[2]
+
+login="jcluser"
+passwd="Juniper!1"
+
 
 # Parse Topology file to connect to each device
 with open("Topology.yaml", 'r') as yamlfile:
@@ -27,7 +31,7 @@ for Key, Router in Devices.items():
   Port=input("Type enter to leave default port or enter Netconf port:")
   if not (Port):
       Port='830'
-  dev = Device(host=IP, user=login, passwd=passwd, port=Port)
+  dev = Device(host=IP, user=login, passwd=passwd, port=int(Port))
 
 # Then connect to each IP mapped to the device to load relevant config file which is in /Config folder
   try:
