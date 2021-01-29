@@ -1,7 +1,6 @@
 system {
   host-name {{HostName}};
 }
-
 interfaces {
 {%- for Interface, Items in Interfaces.items() %}
   {%- if Items.MPLS == 'y' %}
@@ -22,42 +21,35 @@ interfaces {
   {%- endif %}
 {%- endfor %}
 }
-
 protocols {
   ospf {
     area 0.0.0.0 {
-      interfaces {
-        {%- for Interface, Items in Interfaces.items() %}
-        {%- if Items.MPLS == 'y' %}
-        {{Interface}}.0 {
-              interface-type p2p;
-            }
-        {%- endif %}
-        {%- endfor %}
-        lo0.0{
-                passive;
-            }
+      {%- for Interface, Items in Interfaces.items() %}
+      {%- if Items.MPLS == 'y' %}
+      interface {{Interface}}.0 {
+          interface-type p2p;
+      }
+      {%- endif %}
+      {%- endfor %}
+      interface lo0.0 {
+          passive;
       }
     }
   }
   ldp {
-      interfaces {
-        {%- for Interface, Items in Interfaces.items() %}
-        {%- if Items.MPLS == 'y' %}
-        {{Interface}}.0;
-        {%- endif %}
-        {%- endfor %}
-        lo0.0;
-      }
+    {%- for Interface, Items in Interfaces.items() %}
+    {%- if Items.MPLS == 'y' %}
+    interface {{Interface}}.0;
+    {%- endif %}
+    {%- endfor %}
+    interface lo0.0;
   }
   mpls {
-      interfaces {
-        {%- for Interface, Items in Interfaces.items() %}
-        {%- if Items.MPLS == 'y' %}
-        {{Interface}}.0;
-        {%- endif %}
-        {%- endfor %}
-        lo0.0;
-      }
+    {%- for Interface, Items in Interfaces.items() %}
+    {%- if Items.MPLS == 'y' %}
+    interface {{Interface}}.0;
+    {%- endif %}
+    {%- endfor %}
+    interface lo0.0;
   }
 }
