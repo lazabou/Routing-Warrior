@@ -26,16 +26,11 @@ with open("Topology.yaml", 'r') as yamlfile:
   Devices = yaml.load(yamlfile,Loader=yaml.FullLoader)
 
 # Parse device dictionnary ie Topology file to map each device with JCL IP and Netconf port
+get_ip = input("Quelle IP JCL? ")
 for Key, Router in Devices.items():
-  print ('Je vais prendre la conf du routeur' + str(Key))
-  get_ip = input("Quelle IP pour le "+(Router['HostName']) + "? ou tapez entrée si l'ip est la même")
-  if (Key==1):
-      IP=get_ip
-  elif get_ip:
-      IP=get_ip
-  Port=input("Type enter to leave default port or enter Netconf port:")
-  if not (Port):
-      Port='830'
+  IP=get_ip
+  Port = Router['NetconfPort']
+  print ('Device '+ str(Router['HostName'] + ' port '+str(Port)))
   dev = Device(host=IP, user=login, passwd=passwd, port=int(Port))
 
 # Then connect to each IP mapped to the device to load relevant config file which is in /Config folder
@@ -50,6 +45,7 @@ for Key, Router in Devices.items():
     try:
         cu.load(path="configs/"+str(Key)+".txt", merge=True)
         cu.pdiff()
+        cu.commit()
     except:
         print ("Unable to load configuration changes: {0}".format(err))
     finally:

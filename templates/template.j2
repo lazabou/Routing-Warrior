@@ -1,6 +1,7 @@
 system {
   host-name {{HostName}};
 }
+{% set ns = namespace (loopback = "0.0.0.0") %}
 interfaces {
 {%- for Interface, Items in Interfaces.items() %}
   {%- if Items.MPLS == 'y' %}
@@ -13,13 +14,20 @@ interfaces {
      }
   {%- endif %}
   {%- if Interface == 'lo0' %}
-      {{Interface}} {
-       unit 0 {
-         family inet address {{Items.IP}}/32;
-        }
-     }
+    {% set ns.loopback = Items.IP %}
+    {{Interface}} {
+      unit 0 {
+        family inet address {{Items.IP}}/32;
+      }
+    }
   {%- endif %}
 {%- endfor %}
+}
+routing-options {
+  router-id {{ ns.loopback }};
+  route-distinguisher-id {{ ns.loopback }};
+  autonomous-system {{AS}};
+  forwarding-table export ECMP dynamic-list-next-hop ecmp-fast-reroute;
 }
 protocols {
   ospf {
@@ -51,5 +59,37 @@ protocols {
     {%- endif %}
     {%- endfor %}
     interface lo0.0;
+  }
+  lldp {
+    port-id-subtype interface-name;
+    interface all;
+  }
+  {% if RR != 'NA' %}
+  bgp {
+    group Backbone {
+      type internal;
+      local-address {{ ns.loopback }};
+      family inet-vpn unicast;
+      multipath;
+      vpn-apply-export;
+      {% if RR == 'y' %}
+      cluster {{ ns.loopback }};
+        neighbor 10.0.0.1;
+        neighbor 10.0.0.2;
+        neighbor 10.0.0.5;
+        neighbor 10.0.0.6;
+      {% else %}
+        neighbor 10.0.0.3;
+        neighbor 10.0.0.4;
+      {%- endif %}
+    }
+  }
+  {%- endif %}
+}
+policy-options {
+  policy-statement ECMP {
+  then {
+    load-balance per-packet;
+  }
   }
 }

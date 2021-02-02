@@ -1,69 +1,97 @@
 system {
-  hostname PE12;
+  host-name PE12;
 }
 
 interfaces {
     ge-0/0/0 {
-    description vers-11; 
+    description vers-11;
        unit 0 {
          family inet address 10.11.12.12/24;
          family mpls;
         }
      }
     ge-0/0/1 {
-    description vers-14; 
+    description vers-14;
        unit 0 {
          family inet address 10.12.14.12/24;
          family mpls;
         }
      }
     ge-0/0/2 {
-    description vers-6; 
+    description vers-6;
        unit 0 {
          family inet address 10.6.12.12/24;
          family mpls;
         }
-     } 
-      lo0 {
-       unit 0 {
-         family inet address 10.0.0.12/32;
-        }
      }
+    
+    lo0 {
+      unit 0 {
+        family inet address 10.0.0.12/32;
+      }
+    }
 }
-
+routing-options {
+  router-id 10.0.0.12;
+  route-distinguisher-id 10.0.0.12;
+  autonomous-system 65001;
+  forwarding-table export ECMP dynamic-list-next-hop ecmp-fast-reroute;
+}
 protocols {
   ospf {
     area 0.0.0.0 {
-      interfaces {
-        ge-0/0/0.0 {
-              interface-type p2p;
-            }
-        ge-0/0/1.0 {
-              interface-type p2p;
-            }
-        ge-0/0/2.0 {
-              interface-type p2p;
-            }
-        lo0.0{
-                passive;
-            }
+      interface ge-0/0/0.0 {
+          interface-type p2p;
+      }
+      interface ge-0/0/1.0 {
+          interface-type p2p;
+      }
+      interface ge-0/0/2.0 {
+          interface-type p2p;
+      }
+      interface lo0.0 {
+          passive;
       }
     }
   }
   ldp {
-      interfaces {
-        ge-0/0/0.0;
-        ge-0/0/1.0;
-        ge-0/0/2.0;
-        lo0.0;
-      }
+    interface ge-0/0/0.0;
+    interface ge-0/0/1.0;
+    interface ge-0/0/2.0;
+    interface lo0.0;
   }
   mpls {
-      interfaces {
-        ge-0/0/0.0;
-        ge-0/0/1.0;
-        ge-0/0/2.0;
-        lo0.0;
-      }
+    interface ge-0/0/0.0;
+    interface ge-0/0/1.0;
+    interface ge-0/0/2.0;
+    interface lo0.0;
+  }
+  lldp {
+    port-id-subtype interface-name;
+    interface all;
+  }
+  
+  bgp {
+    group Backbone {
+      type internal;
+      local-address 10.0.0.12;
+      family inet-vpn unicast;
+      multipath;
+      vpn-apply-export;
+      
+      cluster 10.0.0.12;
+        neighbor 10.0.0.1;
+        neighbor 10.0.0.2;
+        neighbor 10.0.0.5;
+        neighbor 10.0.0.6;
+      
+    }
+  }
+}
+policy-options {
+  policy-statement ECMP {
+  then {
+    load-balance per-packet;
+  }
   }
 }

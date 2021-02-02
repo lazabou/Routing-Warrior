@@ -1,33 +1,57 @@
 system {
-  hostname CE9;
+  host-name CE9;
 }
 
-interfaces { 
-      lo0 {
-       unit 0 {
-         family inet address 10.0.0.9/32;
-        }
-     }
+interfaces {
+    
+    lo0 {
+      unit 0 {
+        family inet address 10.0.0.9/32;
+      }
+    }
 }
-
+routing-options {
+  router-id 10.0.0.9;
+  route-distinguisher-id 10.0.0.9;
+  autonomous-system ;
+  forwarding-table export ECMP dynamic-list-next-hop ecmp-fast-reroute;
+}
 protocols {
   ospf {
     area 0.0.0.0 {
-      interfaces {
-        lo0.0{
-                passive;
-            }
+      interface lo0.0 {
+          passive;
       }
     }
   }
   ldp {
-      interfaces {
-        lo0.0;
-      }
+    interface lo0.0;
   }
   mpls {
-      interfaces {
-        lo0.0;
-      }
+    interface lo0.0;
+  }
+  lldp {
+    port-id-subtype interface-name;
+    interface all;
+  }
+  
+  bgp {
+    group Backbone {
+      type internal;
+      local-address 10.0.0.9;
+      family inet-vpn unicast;
+      multipath;
+      vpn-apply-export;
+      
+        neighbor 10.0.0.3;
+        neighbor 10.0.0.4;
+    }
+  }
+}
+policy-options {
+  policy-statement ECMP {
+  then {
+    load-balance per-packet;
+  }
   }
 }

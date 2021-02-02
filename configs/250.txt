@@ -1,18 +1,18 @@
 system {
-  host-name CE15;
+  host-name vmx250;
 }
 
 interfaces {
     
     lo0 {
       unit 0 {
-        family inet address 10.0.0.15/32;
+        family inet address 10.0.0.250/32;
       }
     }
 }
 routing-options {
-  router-id 10.0.0.15;
-  route-distinguisher-id 10.0.0.15;
+  router-id 10.0.0.250;
+  route-distinguisher-id 10.0.0.250;
   autonomous-system ;
   forwarding-table export ECMP dynamic-list-next-hop ecmp-fast-reroute;
 }
@@ -38,7 +38,7 @@ protocols {
   bgp {
     group Backbone {
       type internal;
-      local-address 10.0.0.15;
+      local-address 10.0.0.250;
       family inet-vpn unicast;
       multipath;
       vpn-apply-export;

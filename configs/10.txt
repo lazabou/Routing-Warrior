@@ -1,57 +1,69 @@
 system {
-  hostname PE10;
+  host-name PE10;
 }
 
 interfaces {
     ge-0/0/3 {
-    description vers-2; 
+    description vers-2;
        unit 0 {
          family inet address 10.2.10.10/24;
          family mpls;
         }
      }
     ge-0/0/5 {
-    description vers-1; 
+    description vers-1;
        unit 0 {
          family inet address 10.1.10.10/24;
          family mpls;
         }
-     } 
-      lo0 {
-       unit 0 {
-         family inet address 10.0.0.10/32;
-        }
      }
+    
+    lo0 {
+      unit 0 {
+        family inet address 10.0.0.10/32;
+      }
+    }
 }
-
+routing-options {
+  router-id 10.0.0.10;
+  route-distinguisher-id 10.0.0.10;
+  autonomous-system 65001;
+  forwarding-table export ECMP dynamic-list-next-hop ecmp-fast-reroute;
+}
 protocols {
   ospf {
     area 0.0.0.0 {
-      interfaces {
-        ge-0/0/3.0 {
-              interface-type p2p;
-            }
-        ge-0/0/5.0 {
-              interface-type p2p;
-            }
-        lo0.0{
-                passive;
-            }
+      interface ge-0/0/3.0 {
+          interface-type p2p;
+      }
+      interface ge-0/0/5.0 {
+          interface-type p2p;
+      }
+      interface lo0.0 {
+          passive;
       }
     }
   }
   ldp {
-      interfaces {
-        ge-0/0/3.0;
-        ge-0/0/5.0;
-        lo0.0;
-      }
+    interface ge-0/0/3.0;
+    interface ge-0/0/5.0;
+    interface lo0.0;
   }
   mpls {
-      interfaces {
-        ge-0/0/3.0;
-        ge-0/0/5.0;
-        lo0.0;
-      }
+    interface ge-0/0/3.0;
+    interface ge-0/0/5.0;
+    interface lo0.0;
+  }
+  lldp {
+    port-id-subtype interface-name;
+    interface all;
+  }
+  
+}
+policy-options {
+  policy-statement ECMP {
+  then {
+    load-balance per-packet;
+  }
   }
 }
