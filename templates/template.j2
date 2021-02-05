@@ -44,52 +44,134 @@ protocols {
       }
     }
   }
-  ldp {
-    {%- for Interface, Items in Interfaces.items() %}
-    {%- if Items.MPLS == 'y' %}
-    interface {{Interface}}.0;
-    {%- endif %}
-    {%- endfor %}
-    interface lo0.0;
-  }
-  mpls {
-    {%- for Interface, Items in Interfaces.items() %}
-    {%- if Items.MPLS == 'y' %}
-    interface {{Interface}}.0;
-    {%- endif %}
-    {%- endfor %}
-    interface lo0.0;
-  }
   lldp {
     port-id-subtype interface-name;
     interface all;
   }
-  {% if RR != 'NA' %}
-  bgp {
-    group Backbone {
-      type internal;
-      local-address {{ ns.loopback }};
-      family inet-vpn unicast;
-      multipath;
-      vpn-apply-export;
-      {% if RR == 'y' %}
-      cluster {{ ns.loopback }};
-        neighbor 10.0.0.1;
-        neighbor 10.0.0.2;
-        neighbor 10.0.0.5;
-        neighbor 10.0.0.6;
-      {% else %}
-        neighbor 10.0.0.3;
-        neighbor 10.0.0.4;
+  {%- if 'P' in HostName %}
+    ldp {
+      {%- for Interface, Items in Interfaces.items() %}
+      {%- if Items.MPLS == 'y' %}
+      interface {{Interface}}.0;
       {%- endif %}
+      {%- endfor %}
+      interface lo0.0;
     }
-  }
+    mpls {
+      {%- for Interface, Items in Interfaces.items() %}
+      {%- if Items.MPLS == 'y' %}
+      interface {{Interface}}.0;
+      {%- endif %}
+      {%- endfor %}
+      interface lo0.0;
+    }
+    {% if 'PE' in HostName %}
+    {% if AS==65000 %}
+      bgp {
+        group Backbone-AS65000 {
+          type internal;
+          local-address {{ ns.loopback }};
+          family inet-vpn any;
+          {% if RR == 'y' %}
+            cluster {{ ns.loopback }};
+            neighbor 10.0.0.5;
+            neighbor 10.0.0.6;
+            {%- if 'PE1' in HostName %}
+              neighbor 10.0.0.2
+            {% else %}
+              neighbor 10.0.0.1
+            {%- endif %}  
+          {% else %}
+            neighbor 10.0.0.1;
+            neighbor 10.0.0.2;
+          {%- endif %}
+        }
+        group External {
+          type external;
+          family inet labeled-unicast;
+          {%- if 'PE1' in HostName %}
+            neighbor 10.1.10.10 peer-as 65001;
+          {%- endif %}
+           {%- if 'PE2' in HostName %}
+            neighbor 10.2.10.10 peer-as 65001;
+          {%- endif %}
+          {%- if 'PE5' in HostName %}
+            neighbor 10.5.11.11 peer-as 65001;
+          {%- endif %}
+          {%- if 'PE6' in HostName %}
+            neighbor 10.6.12.12 peer-as 65001;
+          {%- endif %}         
+        }
+      }
+    {% else %}
+      bgp {
+        {%- if 'PE10' in HostName %}
+          group External {
+            peer-as 65000;
+            type external;
+            neighbor 10.1.10.1;
+            neighbor 10.2.10.2;
+            family inet labeled-unicast;
+            export CE-ROUTES;
+          }
+          group Backbone-AS65001 {
+            type internal;
+            family inet-vpn any;
+            neighbor 10.0.0.11;
+            neighbor 10.0.0.12;
+          }
+        {% else %}         
+          group Backbone-AS65001 {
+            type internal;
+            local-address {{ ns.loopback }};
+            family inet-vpn any;
+            multipath;
+            vpn-apply-export;
+            {% if RR == 'y' %}
+              cluster {{ ns.loopback }};
+              neighbor 10.0.0.13;
+              neighbor 10.0.0.14;
+              neighbor 10.0.0.10;
+              {%- if 'PE11' in HostName %}
+                neighbor 10.0.0.12
+              {% else %}
+                neighbor 10.0.0.11
+              {%- endif %}  
+            {% else %}
+              neighbor 10.0.0.11;
+              neighbor 10.0.0.12;
+            {%- endif %}
+          }
+          group External {
+            peer-as 65000;
+            type external;
+            family inet labeled-unicast;
+            {% if 'PE11' in HostName %}
+              neighbor 10.5.11.5
+            {%- endif %}
+            {% if 'PE12' in HostName %}
+              neighbor 10.6.12.6
+            {%- endif %}          
+          }              
+        {%- endif %}
+        }
+    {%- endif %}
   {%- endif %}
+{%- endif %}
 }
 policy-options {
   policy-statement ECMP {
-  then {
-    load-balance per-packet;
+    then {
+      load-balance per-packet;
+    }
   }
+  policy-statement CE-ROUTES {
+    term a {
+      from protocol [ ospf direct ];
+      then accept;
+    }
+    term b {
+      then reject;
+    }
   }
 }

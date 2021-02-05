@@ -30,9 +30,8 @@
     lo0:
       IP: 10.0.0.1
   NetconfPort: 49023
-
   AS: 65000
-  RR: n
+  RR: y
 2:
   HostName: PE2
   Interfaces:
@@ -52,7 +51,7 @@
       IP: 10.0.0.2
   NetconfPort: 49041
   AS: 65000
-  RR: n
+  RR: y
 3:
   HostName: P3
   Interfaces:
@@ -72,7 +71,6 @@
       IP: 10.0.0.3
   NetconfPort: 49017
   AS: 65000
-  RR: y
 4:
   HostName: P4
   Interfaces:
@@ -100,7 +98,6 @@
       IP: 10.0.0.4
   NetconfPort: 49020
   AS: 65000
-  RR: y
 5:
   HostName: PE5
   Interfaces:
@@ -174,7 +171,8 @@
       MPLS: n
     lo0:
       IP: 10.0.0.7
-  NetconfPort: 830
+  NetconfPort: 49000
+  AS: 65002
 8:
   HostName: CE8
   Interfaces:
@@ -195,7 +193,8 @@
       MPLS: n
     lo0:
       IP: 10.0.0.8
-  NetconfPort: 830
+  NetconfPort: 49003
+  AS: 65002
 9:
   HostName: CE9
   Interfaces:
@@ -207,7 +206,8 @@
       MPLS: n
     lo0:
       IP: 10.0.0.9
-  NetconfPort: 830
+  NetconfPort: 49006
+  AS: 65003
 10:
   HostName: PE10
   Interfaces:
@@ -229,7 +229,7 @@
       IP: 10.0.0.10
   NetconfPort: 49026
   AS: 65001
-  RR: NA
+  RR: n
 11:
   HostName: PE11
   Interfaces:
@@ -319,7 +319,8 @@
       MPLS: n
     lo0:
       IP: 10.0.0.15
-  NetconfPort: 830
+  NetconfPort: 49009
+  AS: 65003
 250:
   HostName: vmx250
   Interfaces:

@@ -64,42 +64,60 @@ protocols {
       }
     }
   }
-  ldp {
-    interface ge-0/0/0.0;
-    interface ge-0/0/2.0;
-    interface ge-0/0/5.0;
-    interface ge-0/0/6.0;
-    interface lo0.0;
-  }
-  mpls {
-    interface ge-0/0/0.0;
-    interface ge-0/0/2.0;
-    interface ge-0/0/5.0;
-    interface ge-0/0/6.0;
-    interface lo0.0;
-  }
   lldp {
     port-id-subtype interface-name;
     interface all;
   }
-  
-  bgp {
-    group Backbone {
-      type internal;
-      local-address 10.0.0.1;
-      family inet-vpn unicast;
-      multipath;
-      vpn-apply-export;
-      
-        neighbor 10.0.0.3;
-        neighbor 10.0.0.4;
+    ldp {
+      interface ge-0/0/0.0;
+      interface ge-0/0/2.0;
+      interface ge-0/0/5.0;
+      interface ge-0/0/6.0;
+      interface lo0.0;
     }
-  }
+    mpls {
+      interface ge-0/0/0.0;
+      interface ge-0/0/2.0;
+      interface ge-0/0/5.0;
+      interface ge-0/0/6.0;
+      interface lo0.0;
+    }
+    
+    
+      bgp {
+        group Backbone-AS65000 {
+          type internal;
+          local-address 10.0.0.1;
+          family inet-vpn any;
+          
+            cluster 10.0.0.1;
+            neighbor 10.0.0.5;
+            neighbor 10.0.0.6;
+              neighbor 10.0.0.2
+              
+          
+        }
+        group External {
+          type external;
+          family inet labeled-unicast;
+            neighbor 10.1.10.10 peer-as 65001;         
+        }
+      }
+    
 }
 policy-options {
   policy-statement ECMP {
-  then {
-    load-balance per-packet;
+    then {
+      load-balance per-packet;
+    }
   }
+  policy-statement CE-ROUTES {
+    term a {
+      from protocol [ ospf direct ];
+      then accept;
+    }
+    term b {
+      then reject;
+    }
   }
 }

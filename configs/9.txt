@@ -13,7 +13,7 @@ interfaces {
 routing-options {
   router-id 10.0.0.9;
   route-distinguisher-id 10.0.0.9;
-  autonomous-system ;
+  autonomous-system 65003;
   forwarding-table export ECMP dynamic-list-next-hop ecmp-fast-reroute;
 }
 protocols {
@@ -24,34 +24,24 @@ protocols {
       }
     }
   }
-  ldp {
-    interface lo0.0;
-  }
-  mpls {
-    interface lo0.0;
-  }
   lldp {
     port-id-subtype interface-name;
     interface all;
   }
-  
-  bgp {
-    group Backbone {
-      type internal;
-      local-address 10.0.0.9;
-      family inet-vpn unicast;
-      multipath;
-      vpn-apply-export;
-      
-        neighbor 10.0.0.3;
-        neighbor 10.0.0.4;
-    }
-  }
 }
 policy-options {
   policy-statement ECMP {
-  then {
-    load-balance per-packet;
+    then {
+      load-balance per-packet;
+    }
   }
+  policy-statement CE-ROUTES {
+    term a {
+      from protocol [ ospf direct ];
+      then accept;
+    }
+    term b {
+      then reject;
+    }
   }
 }
