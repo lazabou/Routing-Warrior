@@ -5,14 +5,14 @@
     ge-0/0/0:
       ConnectedTo: 2
       IP: 10.1.2.1/24
-      MPLS: y
+      MPLS: RSVP
     ge-0/0/1:
       ConnectedTo: 7
       MPLS: n
     ge-0/0/2:
       ConnectedTo: 3
       IP: 10.1.3.1/24
-      MPLS: y
+      MPLS: RSVP
     ge-0/0/3:
       ConnectedTo: 7
       MPLS: n
@@ -22,101 +22,109 @@
     ge-0/0/5:
       ConnectedTo: 10
       IP: 10.1.10.1/24
-      MPLS: y
+      MPLS: LDP
     ge-0/0/6:
       ConnectedTo: 4
       IP: 10.1.4.1/24
-      MPLS: y
+      MPLS: RSVP
     lo0:
       IP: 10.0.0.1
-  NetconfPort: 49023
+      ISO: 49.0033.0100.1000.0101.00
+  NetconfPort: 48026
   AS: 65000
   RR: y
+  RSVP: y
 2:
   HostName: PE2
   Interfaces:
     ge-0/0/0:
       ConnectedTo: 1
       IP: 10.1.2.2/24
-      MPLS: y
+      MPLS: RSVP
     ge-0/0/2:
       ConnectedTo: 4
       IP: 10.2.4.2/24
-      MPLS: y
+      MPLS: RSVP
     ge-0/0/3:
       ConnectedTo: 10
       IP: 10.2.10.2/24
-      MPLS: y
+      MPLS: LDP
     lo0:
       IP: 10.0.0.2
-  NetconfPort: 49041
+      ISO: 49.0033.0100.1000.0102.00
+  NetconfPort: 48044
   AS: 65000
   RR: y
+  RSVP: y
 3:
   HostName: P3
   Interfaces:
     ge-0/0/0:
       ConnectedTo: 4
       IP: 10.3.4.3/24
-      MPLS: y
+      MPLS: RSVP
     ge-0/0/1:
       ConnectedTo: 5
       IP: 10.3.5.3/24
-      MPLS: y
+      MPLS: RSVP
     ge-0/0/2:
       ConnectedTo: 1
       IP: 10.1.3.3/24
-      MPLS: y
+      MPLS: RSVP
     lo0:
       IP: 10.0.0.3
-  NetconfPort: 49017
+      ISO: 49.0033.0100.1000.0103.00
+  NetconfPort: 48020
   AS: 65000
+  RSVP: y
 4:
   HostName: P4
   Interfaces:
     ge-0/0/0:
       ConnectedTo: 3
       IP: 10.3.4.4/24
-      MPLS: y
+      MPLS: RSVP
     ge-0/0/1:
       ConnectedTo: 6
       IP: 10.4.6.4/24
-      MPLS: y
+      MPLS: RSVP
     ge-0/0/2:
       ConnectedTo: 2
       IP: 10.2.4.4/24
-      MPLS: y
+      MPLS: RSVP
     ge-0/0/3:
       ConnectedTo: 5
       IP: 10.4.5.4/24
-      MPLS: y
+      MPLS: RSVP
     ge-0/0/6:
       ConnectedTo: 1
       IP: 10.1.4.4/24
-      MPLS: y
+      MPLS: RSVP
     lo0:
       IP: 10.0.0.4
-  NetconfPort: 49020
+      ISO: 49.0033.0100.1000.0104.00
+  NetconfPort: 48023
   AS: 65000
+  RSVP: y
 5:
   HostName: PE5
   Interfaces:
     ge-0/0/0:
       ConnectedTo: 6
       IP: 10.5.6.5/24
-      MPLS: y
+      MPLS: RSVP
     ge-0/0/1:
       ConnectedTo: 3
       IP: 10.3.5.5/24
-      MPLS: y
+      MPLS: RSVP
     ge-0/0/2:
       ConnectedTo: 11
       IP: 10.5.11.5/24
-      MPLS: y
+      MPLS: LDP
     ge-0/0/3:
       ConnectedTo: 4
       IP: 10.4.5.5/24
-      MPLS: y
+      MPLS: RSVP
     ge-0/0/5:
       ConnectedTo: 8
       MPLS: n
@@ -128,24 +136,26 @@
       MPLS: n
     lo0:
       IP: 10.0.0.5
-  NetconfPort: 49044
+      ISO: 49.0033.0100.1000.0105.00
+  NetconfPort: 48047
   AS: 65000
   RR: n
+  RSVP: y
 6:
   HostName: PE6
   Interfaces:
     ge-0/0/0:
       ConnectedTo: 5
       IP: 10.5.6.6/24
-      MPLS: y
+      MPLS: RSVP
     ge-0/0/1:
       ConnectedTo: 4
       IP: 10.4.6.6/24
-      MPLS: y
+      MPLS: RSVP
     ge-0/0/2:
       ConnectedTo: 12
       IP: 10.6.12.6/24
-      MPLS: y
+      MPLS: LDP
     ge-0/0/3:
       ConnectedTo: 8
       MPLS: n
@@ -154,9 +164,11 @@
       MPLS: n
     lo0:
       IP: 10.0.0.6
-  NetconfPort: 49047
+      ISO: 49.0033.0100.1000.0106.00
+  NetconfPort: 48050
   AS: 65000
   RR: n
+  RSVP: y
 7:
   HostName: CE7
   Interfaces:
@@ -171,8 +183,9 @@
       MPLS: n
     lo0:
       IP: 10.0.0.7
-  NetconfPort: 49000
+  NetconfPort: 48000
   AS: 65002
+  RSVP: n
 8:
   HostName: CE8
   Interfaces:
@@ -193,8 +206,9 @@
       MPLS: n
     lo0:
       IP: 10.0.0.8
-  NetconfPort: 49003
+  NetconfPort: 48003
   AS: 65002
+  RSVP: n
 9:
   HostName: CE9
   Interfaces:
@@ -206,8 +220,9 @@
       MPLS: n
     lo0:
       IP: 10.0.0.9
-  NetconfPort: 49006
+  NetconfPort: 48006
   AS: 65003
+  RSVP: n
 10:
   HostName: PE10
   Interfaces:
@@ -220,94 +235,104 @@
     ge-0/0/3:
       ConnectedTo: 2
       IP: 10.2.10.10/24
-      MPLS: y
+      MPLS: LDP
     ge-0/0/5:
       ConnectedTo: 1
       IP: 10.1.10.10/24
-      MPLS: y
+      MPLS: LDP
     lo0:
       IP: 10.0.0.10
-  NetconfPort: 49026
-  AS: 65001
+      ISO: 49.0029.0100.1000.0110.00
+  NetconfPort: 48029
+  AS: 65000
   RR: n
+  RSVP: n
 11:
   HostName: PE11
   Interfaces:
     ge-0/0/0:
       ConnectedTo: 12
       IP: 10.11.12.11/24
-      MPLS: y
+      MPLS: LDP
     ge-0/0/1:
       ConnectedTo: 13
       IP: 10.11.13.11/24
-      MPLS: y
+      MPLS: LDP
     ge-0/0/2:
       ConnectedTo: 5
       IP: 10.5.11.11/24
-      MPLS: y
+      MPLS: LDP
     lo0:
       IP: 10.0.0.11
-  NetconfPort: 49029
-  AS: 65001
-  RR: y
+      ISO: 49.0010.0100.1000.0111.00
+  NetconfPort: 48032
+  AS: 65000
+  RR: n
+  RSVP: n
 12:
   HostName: PE12
   Interfaces:
     ge-0/0/0:
       ConnectedTo: 11
       IP: 10.11.12.12/24
-      MPLS: y
+      MPLS: LDP
     ge-0/0/1:
       ConnectedTo: 14
       IP: 10.12.14.12/24
-      MPLS: y
+      MPLS: LDP
     ge-0/0/2:
       ConnectedTo: 6
       IP: 10.6.12.12/24
-      MPLS: y
+      MPLS: LDP
     lo0:
       IP: 10.0.0.12
-  NetconfPort: 49032
-  AS: 65001
-  RR: y
+      ISO: 49.0010.0100.1000.0112.00
+  NetconfPort: 48035
+  AS: 65000
+  RR: n
+  RSVP: n
 13:
   HostName: PE13
   Interfaces:
     ge-0/0/0:
       ConnectedTo: 14
       IP: 10.13.14.13/24
-      MPLS: y
+      MPLS: LDP
     ge-0/0/1:
       ConnectedTo: 11
       IP: 10.11.13.13/24
-      MPLS: y
+      MPLS: LDP
     ge-0/0/2:
       ConnectedTo: 15
       MPLS: n
     lo0:
       IP: 10.0.0.13
-  NetconfPort: 49035
-  AS: 65001
+      ISO: 49.0010.0100.1000.0113.00
+  NetconfPort: 48038
+  AS: 65000
   RR: n
+  RSVP: n
 14:
   HostName: PE14
   Interfaces:
     ge-0/0/0:
       ConnectedTo: 13
       IP: 10.13.14.14/24
-      MPLS: y
+      MPLS: LDP
     ge-0/0/1:
       ConnectedTo: 12
       IP: 10.12.14.14/24
-      MPLS: y
+      MPLS: LDP
     ge-0/0/3:
       ConnectedTo: 15
       MPLS: n
     lo0:
       IP: 10.0.0.14
-  NetconfPort: 49038
-  AS: 65001
+      ISO: 49.0010.0100.1000.0114.00
+  NetconfPort: 48041
+  AS: 65000
   RR: n
+  RSVP: n
 15:
   HostName: CE15
   Interfaces:
@@ -319,11 +344,6 @@
       MPLS: n
     lo0:
       IP: 10.0.0.15
-  NetconfPort: 49009
+  NetconfPort: 48009
   AS: 65003
-250:
-  HostName: vmx250
-  Interfaces:
-    lo0:
-      IP: 10.0.0.250
-  NetconfPort: 830
+

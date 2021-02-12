@@ -4,12 +4,13 @@ system {
 {% set ns = namespace (loopback = "0.0.0.0") %}
 interfaces {
 {%- for Interface, Items in Interfaces.items() %}
-  {%- if Items.MPLS == 'y' %}
+  {%- if 'P' in Items.MPLS  %}
     {{Interface}} {
     description vers-{{Items.ConnectedTo}};
        unit 0 {
          family inet address {{Items.IP}};
          family mpls;
+         family iso;
         }
      }
   {%- endif %}
@@ -18,6 +19,11 @@ interfaces {
     {{Interface}} {
       unit 0 {
         family inet address {{Items.IP}}/32;
+        {%- if 'P' in HostName %}
+          family iso {
+              address {{Items.ISO}};
+          }
+        {%- endif %}        
       }
     }
   {%- endif %}
@@ -30,43 +36,68 @@ routing-options {
   forwarding-table export ECMP dynamic-list-next-hop ecmp-fast-reroute;
 }
 protocols {
-  ospf {
-    area 0.0.0.0 {
-      {%- for Interface, Items in Interfaces.items() %}
-      {%- if Items.MPLS == 'y' %}
-      interface {{Interface}}.0 {
-          interface-type p2p;
-      }
-      {%- endif %}
-      {%- endfor %}
-      interface lo0.0 {
-          passive;
-      }
+{% if 'P' in HostName %}
+  {%- if RSVP == 'y' %}
+  rsvp {
+  {%- for Interface, Items in Interfaces.items() %}
+    {%- if Items.MPLS == 'RSVP' %}
+        interface {{Interface}}.0 {
+            link-protection;
+        }
+    {%- endif %}
+  {%- endfor %}
+  }
+  {%- endif %}
+  mpls {
+  {%- for Interface, Items in Interfaces.items() %}
+    {%- if Items.MPLS == 'RSVP' %}
+        interface {{Interface}}.0;
+    {%- endif %}
+  {%- endfor %}
+        interface lo0.0;
+  }  
+{%- endif %}
+  isis {
+    export ISIS-L2-to-L1;
+    lsp-lifetime 65535;
+    spf-options {
+      delay 50;
+      holddown 2000;
     }
+    level 1 {
+            wide-metrics-only;
+    }
+    level 2 {
+            wide-metrics-only;
+    }
+
+      {%- for Interface, Items in Interfaces.items() %}
+        {%- if Items.MPLS == 'RSVP' %}
+          interface {{Interface}}.0 {
+          point-to-point;
+          level 2 metric 10;
+          level 1 disable;
+          }
+        {%- endif %}
+        {%- if Items.MPLS == 'LDP' %}
+          interface {{Interface}}.0 {
+          point-to-point;
+          level 1 metric 50;
+          level 2 disable;
+          }          
+        {%- endif %}
+      {%- endfor %}
+      interface lo0.0;
+      interface all {
+        ldp-synchronization;
+      }   
   }
   lldp {
     port-id-subtype interface-name;
     interface all;
   }
-  {%- if 'P' in HostName %}
-    ldp {
-      {%- for Interface, Items in Interfaces.items() %}
-      {%- if Items.MPLS == 'y' %}
-      interface {{Interface}}.0;
-      {%- endif %}
-      {%- endfor %}
-      interface lo0.0;
-    }
-    mpls {
-      {%- for Interface, Items in Interfaces.items() %}
-      {%- if Items.MPLS == 'y' %}
-      interface {{Interface}}.0;
-      {%- endif %}
-      {%- endfor %}
-      interface lo0.0;
-    }
+
     {% if 'PE' in HostName %}
-    {% if AS==65000 %}
       bgp {
         group Backbone-AS65000 {
           type internal;
@@ -76,88 +107,23 @@ protocols {
             cluster {{ ns.loopback }};
             neighbor 10.0.0.5;
             neighbor 10.0.0.6;
+            neighbor 10.0.0.11;
+            neighbor 10.0.0.12;
+            neighbor 10.0.0.13;
+            neighbor 10.0.0.14;
+            neighbor 10.0.0.10;           
             {%- if 'PE1' in HostName %}
-              neighbor 10.0.0.2
+              neighbor 10.0.0.2;
             {% else %}
-              neighbor 10.0.0.1
+              neighbor 10.0.0.1;
             {%- endif %}  
           {% else %}
             neighbor 10.0.0.1;
             neighbor 10.0.0.2;
           {%- endif %}
         }
-        group External {
-          type external;
-          family inet labeled-unicast;
-          {%- if 'PE1' in HostName %}
-            neighbor 10.1.10.10 peer-as 65001;
-          {%- endif %}
-           {%- if 'PE2' in HostName %}
-            neighbor 10.2.10.10 peer-as 65001;
-          {%- endif %}
-          {%- if 'PE5' in HostName %}
-            neighbor 10.5.11.11 peer-as 65001;
-          {%- endif %}
-          {%- if 'PE6' in HostName %}
-            neighbor 10.6.12.12 peer-as 65001;
-          {%- endif %}         
-        }
-      }
-    {% else %}
-      bgp {
-        {%- if 'PE10' in HostName %}
-          group External {
-            peer-as 65000;
-            type external;
-            neighbor 10.1.10.1;
-            neighbor 10.2.10.2;
-            family inet labeled-unicast;
-            export CE-ROUTES;
-          }
-          group Backbone-AS65001 {
-            type internal;
-            family inet-vpn any;
-            neighbor 10.0.0.11;
-            neighbor 10.0.0.12;
-          }
-        {% else %}         
-          group Backbone-AS65001 {
-            type internal;
-            local-address {{ ns.loopback }};
-            family inet-vpn any;
-            multipath;
-            vpn-apply-export;
-            {% if RR == 'y' %}
-              cluster {{ ns.loopback }};
-              neighbor 10.0.0.13;
-              neighbor 10.0.0.14;
-              neighbor 10.0.0.10;
-              {%- if 'PE11' in HostName %}
-                neighbor 10.0.0.12
-              {% else %}
-                neighbor 10.0.0.11
-              {%- endif %}  
-            {% else %}
-              neighbor 10.0.0.11;
-              neighbor 10.0.0.12;
-            {%- endif %}
-          }
-          group External {
-            peer-as 65000;
-            type external;
-            family inet labeled-unicast;
-            {% if 'PE11' in HostName %}
-              neighbor 10.5.11.5
-            {%- endif %}
-            {% if 'PE12' in HostName %}
-              neighbor 10.6.12.6
-            {%- endif %}          
-          }              
-        {%- endif %}
-        }
+      }  
     {%- endif %}
-  {%- endif %}
-{%- endif %}
 }
 policy-options {
   policy-statement ECMP {
@@ -174,4 +140,69 @@ policy-options {
       then reject;
     }
   }
+    policy-statement ISIS-L2-to-L1 {
+        term 1 {
+            from {
+                protocol isis;
+                level 2;
+                tag 2;
+            }
+            to {
+                protocol isis;
+                level 1;
+            }
+            then accept;
+        }
+        term 2 {
+            from {
+                protocol isis;
+                level 2;
+                tag 1;
+            }
+            to {
+                protocol isis;
+                level 1;
+            }
+            then accept;
+        }
+        term 3 {
+            from {
+                protocol isis;
+                level 2;
+                route-filter 10.10.0.0/8 prefix-length-range /32-/32;
+            }
+            to {
+                protocol isis;
+                level 1;
+            }
+            then accept;
+        }
+        term 4 {
+            from {
+                protocol isis;
+                level 1;
+            }
+            to {
+                protocol isis;
+                level 2;
+            }
+            then accept;
+        }
+        term 5 {
+            from {
+                protocol static;
+                tag 1;
+            }
+            to protocol isis;
+            then accept;
+        }
+        term 6 {
+            from {
+                protocol static;
+                tag 2;
+            }
+            to protocol isis;
+            then accept;
+        }
+    }
 }

@@ -8,6 +8,7 @@ interfaces {
        unit 0 {
          family inet address 10.1.2.1/24;
          family mpls;
+         family iso;
         }
      }
     ge-0/0/2 {
@@ -15,6 +16,7 @@ interfaces {
        unit 0 {
          family inet address 10.1.3.1/24;
          family mpls;
+         family iso;
         }
      }
     ge-0/0/5 {
@@ -22,6 +24,7 @@ interfaces {
        unit 0 {
          family inet address 10.1.10.1/24;
          family mpls;
+         family iso;
         }
      }
     ge-0/0/6 {
@@ -29,12 +32,16 @@ interfaces {
        unit 0 {
          family inet address 10.1.4.1/24;
          family mpls;
+         family iso;
         }
      }
     
     lo0 {
       unit 0 {
         family inet address 10.0.0.1/32;
+          family iso {
+              address 49.0033.0100.1000.0101.00;
+          }        
       }
     }
 }
@@ -45,44 +52,67 @@ routing-options {
   forwarding-table export ECMP dynamic-list-next-hop ecmp-fast-reroute;
 }
 protocols {
-  ospf {
-    area 0.0.0.0 {
-      interface ge-0/0/0.0 {
-          interface-type p2p;
-      }
-      interface ge-0/0/2.0 {
-          interface-type p2p;
-      }
-      interface ge-0/0/5.0 {
-          interface-type p2p;
-      }
-      interface ge-0/0/6.0 {
-          interface-type p2p;
-      }
-      interface lo0.0 {
-          passive;
-      }
+
+  rsvp {
+        interface ge-0/0/0.0 {
+            link-protection;
+        }
+        interface ge-0/0/2.0 {
+            link-protection;
+        }
+        interface ge-0/0/6.0 {
+            link-protection;
+        }
+  }
+  mpls {
+        interface ge-0/0/0.0;
+        interface ge-0/0/2.0;
+        interface ge-0/0/6.0;
+        interface lo0.0;
+  }
+  isis {
+    export ISIS-L2-to-L1;
+    lsp-lifetime 65535;
+    spf-options {
+      delay 50;
+      holddown 2000;
     }
+    level 1 {
+            wide-metrics-only;
+    }
+    level 2 {
+            wide-metrics-only;
+    }
+          interface ge-0/0/0.0 {
+          point-to-point;
+          level 2 metric 10;
+          level 1 disable;
+          }
+          interface ge-0/0/2.0 {
+          point-to-point;
+          level 2 metric 10;
+          level 1 disable;
+          }
+          interface ge-0/0/5.0 {
+          point-to-point;
+          level 1 metric 50;
+          level 2 disable;
+          }
+          interface ge-0/0/6.0 {
+          point-to-point;
+          level 2 metric 10;
+          level 1 disable;
+          }
+      interface lo0.0;
+      interface all {
+        ldp-synchronization;
+      }   
   }
   lldp {
     port-id-subtype interface-name;
     interface all;
   }
-    ldp {
-      interface ge-0/0/0.0;
-      interface ge-0/0/2.0;
-      interface ge-0/0/5.0;
-      interface ge-0/0/6.0;
-      interface lo0.0;
-    }
-    mpls {
-      interface ge-0/0/0.0;
-      interface ge-0/0/2.0;
-      interface ge-0/0/5.0;
-      interface ge-0/0/6.0;
-      interface lo0.0;
-    }
-    
+
     
       bgp {
         group Backbone-AS65000 {
@@ -93,17 +123,16 @@ protocols {
             cluster 10.0.0.1;
             neighbor 10.0.0.5;
             neighbor 10.0.0.6;
-              neighbor 10.0.0.2
+            neighbor 10.0.0.11;
+            neighbor 10.0.0.12;
+            neighbor 10.0.0.13;
+            neighbor 10.0.0.14;
+            neighbor 10.0.0.10;
+              neighbor 10.0.0.2;
               
           
         }
-        group External {
-          type external;
-          family inet labeled-unicast;
-            neighbor 10.1.10.10 peer-as 65001;         
-        }
       }
-    
 }
 policy-options {
   policy-statement ECMP {
@@ -120,4 +149,69 @@ policy-options {
       then reject;
     }
   }
+    policy-statement ISIS-L2-to-L1 {
+        term 1 {
+            from {
+                protocol isis;
+                level 2;
+                tag 2;
+            }
+            to {
+                protocol isis;
+                level 1;
+            }
+            then accept;
+        }
+        term 2 {
+            from {
+                protocol isis;
+                level 2;
+                tag 1;
+            }
+            to {
+                protocol isis;
+                level 1;
+            }
+            then accept;
+        }
+        term 3 {
+            from {
+                protocol isis;
+                level 2;
+                route-filter 10.10.0.0/8 prefix-length-range /32-/32;
+            }
+            to {
+                protocol isis;
+                level 1;
+            }
+            then accept;
+        }
+        term 4 {
+            from {
+                protocol isis;
+                level 1;
+            }
+            to {
+                protocol isis;
+                level 2;
+            }
+            then accept;
+        }
+        term 5 {
+            from {
+                protocol static;
+                tag 1;
+            }
+            to protocol isis;
+            then accept;
+        }
+        term 6 {
+            from {
+                protocol static;
+                tag 2;
+            }
+            to protocol isis;
+            then accept;
+        }
+    }
 }
